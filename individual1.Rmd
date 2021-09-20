@@ -1,0 +1,76 @@
+---
+title: "hw2"
+author: "Adnan Salihovic"
+date: "9/18/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(classdata)
+library(magrittr)
+data(choco)
+
+df <- choco
+
+hist(df$CocoaPercent, main = "Histogram of Cocoa Percentage", xlab= "Cocoa Percent")
+boxplot(df$CocoaPercent, main = "Boxplot of Cocoa Percenage", ylab = "Cocoa Percent")
+
+print("The majority of the cocoa percent is within 65-75 percent with 2 cocoa percents reaching as high as 100 and 3 being lower than 50 percent.")
+
+testing <- subset(choco,CountryBeanOrigin %in% c(names(sort(table(df$CountryBeanOrigin), decreasing = T)[1:10])))
+test <- table(testing$Rating,testing$CountryBeanOrigin)
+barplot(test, las = 3, cex.names = .5, col = c("Red","Blue","Green","Orange", "Yellow", "Purple", "Pink","Magenta", "Cyan", "Brown","Black","White","Deep Pink"), main = "Barplot Rating Numbers by CountryBeanOrigin", ylab = "Count")
+
+print("LEGEND FOR ABOVE GRAPH:Red = 1, Blue = 1.5, Green = 1.75, Orange = 2, Yellow = 2.25, Purple = 2.5, Pink = 2.6, Magenta = 2.75, Cyan = 3, Brown = 3.25, Black = 3.5, White = 3.75, Deep Pink = 4 ")
+print("The number of ratings is positively affected by the amount of beans produced by a country. More Higher ratings and lower ratings appear for countries who produce more beans.")
+
+unpleasant <- df$CocoaPercent[df$Rating >= 1 & df$Rating < 2]
+dissapointing <- df$CocoaPercent[df$Rating >= 2 & df$Rating < 3]
+recommended <- df$CocoaPercent[df$Rating >= 3 & df$Rating < 3.5]
+highlyrecommended <- df$CocoaPercent[df$Rating >= 3.5 & df$Rating < 4]
+outstanding <- df$CocoaPercent[df$Rating >= 4 & df$Rating <= 5]
+
+boxplot(unpleasant,dissapointing,recommended,highlyrecommended,outstanding)
+mean(unpleasant)
+mean(dissapointing)
+mean(recommended)
+mean(highlyrecommended)
+mean(outstanding)
+print("Ratings do not depend on the cocoa percentage because looking at the box plot and the average total rating of each of the rating levels, they are all fairly similar besides the lowest rated chocolate which averages 84.29 cocoa percent while the other levels average at 70-72")
+
+testing2 <- subset(testing,Characteristics1 %in% c(names(sort(table(df$Characteristics1), decreasing = T)[1:10])))
+plottable <- table(testing2$Characteristics1, testing2$CountryBeanOrigin)
+plottable2 <- prop.table(plottable,2)
+par(mar=c(5, 4, 4, 8), xpd=TRUE)
+barplot(plottable2, las = 3, cex.names = .5, col = c("Red","Blue","Green","Orange", "Yellow", "Purple", "Pink","Magenta", "Cyan", "Brown"), main = "Percentage of top 10 flavors by CountryBeanOrigin")
+print("LEGEND FOR ABOVE GRAPH:Red = Creamy, Blue = dry, Green = fatty, Orange = gritty, Yellow = intense, Purple = nutty, Pink = sandy, Magenta = spicy, Cyan = sticky, Brown = sweet ")
+
+print("Referring to the above graph, most countries have similar flavors as there top production, Brazil leads in production of creamy flavors with over a 40% output with no production in gritty flavor. Most countries are kept at similar flavors of production. Referring to the Rating~Country graph, the Dominican Republic tends to produce the most 3.75 rated chocolate but does not produce any 4 rated chocolate. Countries that produce more chocolate/beans tend to have more amounts of higher rated chocolate than countries that have less in production.")
+
+print("Analysis 1: Are the ratings for sweet flavored chocolate better than the ratings for spicy flavored chocolate?")
+analysis1 <- subset(choco,Characteristics1 %in% c("sweet","spicy")) 
+analysis1table <- table(analysis1$Rating,analysis1$Characteristics1)
+analysis1sweet <- subset(choco,Characteristics1 %in% c("sweet")) 
+analysis1spicy <- subset(choco,Characteristics1 %in% c("spicy")) 
+mean(analysis1sweet$Rating)
+mean(analysis1spicy$Rating)
+barplot(analysis1table, legend = T, col = c("Red","Blue","Green","Orange", "Yellow", "Purple", "Pink","Brown"), main = "Barplot Comparing the Ratings of Sweet and Spicy Chocolate flavors")
+print("Using the above graph and the average ratings of the 2 flavors of chocolate, Spicy chocolate tends to have a higher average rating (3.328947) than Sweet chocolate (3.078125), However there are more sweet chocolate flavor types than spicy.")
+
+print("Analysis 2: Which of the top 5 producing companies produces the highest average rated chocolate?")
+analysis2 <- subset(choco,Company %in% c(names(sort(table(choco$Company), decreasing = T)[1:5])))
+analysis2table <- table(analysis2$Rating,analysis2$Company)
+barplot(analysis2table,col = c("Red","Blue","Green","Orange", "Yellow", "Purple", "Pink","Brown") ,legend=T, main = "Chocolate Ratings of the 5 Most Producing Companies")
+mean(analysis2$Rating[analysis2$Company == "A. Morin"])
+mean(analysis2$Rating[analysis2$Company == "Arete"])
+mean(analysis2$Rating[analysis2$Company == "Bonnat"])
+mean(analysis2$Rating[analysis2$Company == "Fresco"])
+mean(analysis2$Rating[analysis2$Company == "Soma"])
+
+print("Looking at the graph and the calculated rate averages for the top 5 companies, all of them were close in rating average, but Soma who produces more chocolate than the others, also has a higher average rating (3.591346) for their chocolate than the others.")
+```
+
